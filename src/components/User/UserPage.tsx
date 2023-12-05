@@ -11,84 +11,113 @@ import { UserGroups } from './UserGroups';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import reportWebVitals from '../../reportWebVitals';
+import { ClientDiscription } from './UserDiscription';
+import { IClient } from '../../redux/interfaces/Client';
+import { takeClientInfo } from '../../redux/reducers/ClientSlice';
+import { RecordClient } from '../Record/RecordClient';
 
 
 const { TabPane } = Tabs
 
 export const UserPage: React.FC = () => {
 
-    const client = useAppSelector((state: RootState) => state.client)
-    const [form] = Form.useForm();
-    const user = useAppSelector((state: RootState) => state.user)
-    const [messageApi, contextHolder] = message.useMessage()
-    const [userId, setUserId] = useState(-1)
-    const [isLoading, setLoading] = useState(true)
-    const [clientInfo, setClientInfo] = useState({
-      id: -1,
-      firstName: '',
-      secondName: '',
-      phoneNumber: '',
-      birthDay: new Date(),
-      gender: 0,
-    })
-  
-    useEffect(()=>{
-        if(userId==-1 && isLoading){
-            setLoading(()=>false)
-            getUserId(user.user.username).then(()=>console.log(1))
-        }
-    }, [user.user]) 
 
+  const user = useAppSelector((state: RootState) => state.user)
+  const [messageApi, contextHolder] = message.useMessage()
+  const [clientId, setClientId] = useState(-1)
+  const [isLoading, setLoading] = useState(true)
+  const client = useAppSelector((state: RootState) => state.client)
+  const dispatch = useAppDispatch()
 
-
-    async function getUserId(username: string) {
-       await axios({
-          method: 'get',
-          url: 'http://localhost:8080/client/getUserId?name=' + username,
-          withCredentials: false,
-        }).then(function (response) {
-          setUserId((e) => e = response.data)
-        }).catch(function (error) {
-          if (error.response) {
-            showMessage(error.response.data.message, "error");
-          }
-          else {
-            showMessage("Ошибка сервера, сервер недоступен", "error");
-          }
+  useEffect(() => {
+    // if (clientId !== -1 && isLoading) {
+      
+      getUserId(user.user.username).then(function () {
+        getClientInfo(clientId).then(() => console.log(client))
+        setLoading(() => false)
+      }
+      )
     
-        });
+
+  }, [user.user, isLoading])
+
+
+
+
+
+  async function getUserId(username: string) {
+    await axios({
+      method: 'get',
+      url: 'http://localhost:8080/client/getClientIdByUserName?userName=' + username,
+      withCredentials: false,
+    }).then(function (response) {
+      setClientId(() => response.data.id)
+      console.log(clientId)
+    }).catch(function (error) {
+      if (error.response) {
+        showMessage(error.response.data.message, "error");
+
+      }
+      else {
+        showMessage("Ошибка сервера, сервер недоступен", "error");
       }
 
+    });
+  }
+
+  async function getClientInfo(clientId: number) {
+    await axios({
+      method: 'get',
+      url: 'http://localhost:8080/client/info?id=' + clientId
+    }).then(function (response) {
+      let temp: IClient = response.data as IClient
+      console.log(temp)
+      dispatch(takeClientInfo(temp))
+    }).catch(function (error) {
+      if (error.response) {
+        showMessage(error.response.data.message, "error");
+      }
+      else {
+        showMessage("Ошибка сервера, сервер недоступен", "error");
+      }
+    });
+  }
 
 
-      const showMessage = (message: string, type: any) => {
-        messageApi.open({
-          type: type,
-          content: message,
-          duration: 4,
-        });
-      };
 
-    return (
-        <Layout>
-            <Content style={{ padding: '0 50px', marginLeft: "10%", marginRight: "10%", marginTop: "10%", marginBottom: "10%" }}>
-                <Tabs
-                    tabPosition={'left'}
-                    defaultActiveKey="1"
-                >
-                    <TabPane tab="About" key="1" >
-                        <UserInfo parrentUserId={userId}></UserInfo>
-                    </TabPane>
-                    <TabPane tab="Schedule" key="2">
-                        <UserSchedule></UserSchedule>
-                    </TabPane>
-                    <TabPane tab="Groups" key="3">
-                        <UserGroups parrentUserId={userId}>
-                         </UserGroups >
-                    </TabPane>
-                </Tabs>
-            </Content>
-        </Layout >
-    )
+  const showMessage = (message: string, type: any) => {
+    messageApi.open({
+      type: type,
+      content: message,
+      duration: 4,
+    });
+  };
+
+  return (
+    <Layout>
+      <Content style={{ padding: '0 50px', marginLeft: "10%", marginRight: "10%", marginTop: "10%", marginBottom: "10%" }}>
+        <Tabs
+          tabPosition={'left'}
+          defaultActiveKey="1"
+        >
+          <TabPane tab="About" key="1" >
+            <ClientDiscription client={client.client} />
+          </TabPane>
+          <TabPane tab="Edit info" key="2" >
+            <UserInfo parrentUserId={clientId} updateClient={getClientInfo} />
+          </TabPane>
+          <TabPane tab="Schedule" key="3">
+            <UserSchedule parentClientId={clientId} />
+          </TabPane>
+          <TabPane tab="Groups" key="4">
+            <UserGroups parrentUserId={clientId} />
+          </TabPane>
+          <TabPane tab="Records" key="5">
+            <RecordClient />
+          </TabPane>
+        </Tabs>
+      </Content>
+    </Layout >
+  )
 }
 

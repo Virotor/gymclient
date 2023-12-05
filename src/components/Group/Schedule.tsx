@@ -59,9 +59,9 @@ export const GroupSchedule: React.FC<PropsWithChildren<IScheduleProps>> = ({ gro
 
         const listData : ISchedule[] = []
         schedule.forEach(elment =>  {
-            if(new Date(elment.date).getDate() === value.date() && new Date(elment.date).getMonth() === value.month()){
-                listData.push(elment)
-            }
+            // if(new Date(elment.date).getDate() === value.date() && new Date(elment.date).getMonth() === value.month()){
+            //     listData.push(elment)
+            // }
         })           
         
         

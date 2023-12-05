@@ -9,7 +9,7 @@ import { RootState } from './store';
 import { Counter } from './components/Counter/Counter';
 import { Navigate, Route, RouteProps, Routes } from 'react-router';
 import Layout from './components/Layout ';
-import Home from './components/Home';
+import Home from './components/Home/Home';
 import Login from './components/Login/Login';
 import { UserPage } from './components/User/UserPage';
 import { useAppSelector } from './hooks';

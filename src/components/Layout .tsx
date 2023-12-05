@@ -16,21 +16,32 @@ const { Header, Footer, Content } = Layout;
     backgroundColor: '#7dbcea',
   };
 
+const headerStyle : React.CSSProperties = {
+    borderBlock : 'none',
+    color : 'white',
+    backgroundColor : 'black',
+    height : 60
+}
+
+const containerStyle : React.CSSProperties ={
+  backgroundColor : 'black',
+  color : 'white',
+}
 
 
 export default (props: { children?: React.ReactNode }) => (
     <React.Fragment>
         <Layout>
-            <Header >
+            <Header style = {headerStyle} >
             <NavMenu />
             </Header>
             {/* <Sider style={siderStyle}/> */}
-            <Content>
-                <Container>
+            <Content style = {containerStyle}>
+                <Container >
                         {props.children}
                 </Container>
             </Content>
-            <Footer style={footerStyle} />
+            {/* <Footer style={footerStyle} /> */}
         </Layout>
     </React.Fragment>
 );

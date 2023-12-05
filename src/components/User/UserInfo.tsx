@@ -13,13 +13,17 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 import { RangePickerProps } from 'antd/es/date-picker';
 import axios from 'axios';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { RootState } from '../../store';
 import { IClient } from '../../redux/interfaces/Client';
+import { ClientDiscription } from './UserDiscription';
+
+import { takeClientInfo, loadingInfo, takeClientGroups, clientEditInfo, clientAddNewGroup, clientDeleteGroup } from '../../redux/reducers/ClientSlice'
+
 
 dayjs.extend(customParseFormat);
 
@@ -55,57 +59,30 @@ const disabledDate: RangePickerProps['disabledDate'] = (current: any) => {
 };
 
 
-type UserInfoProps ={
-  parrentUserId : number;
-
+type UserInfoProps = {
+  parrentUserId: number;
+  updateClient: (clientId: number) => void
 }
 
-export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUserId}:UserInfoProps) => {
+export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUserId, updateClient }: UserInfoProps) => {
+
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage()
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [userId, setUserId] = useState(parrentUserId)
-  const [clientInfo, setClientInfo] = useState({
-    id: -1,
-    firstName: '',
-    secondName: '',
-    phoneNumber: '',
-    birthDay: new Date(),
-    gender: 0,
-  } as IClient)
+  const client = useAppSelector((state: RootState) => state.client)
   const [isChangeFiedls, setChangeFields] = useState(false)
-  
+
   useEffect(() => {
-      setUserId(()=>parrentUserId)
-      if (parrentUserId!=undefined && parrentUserId != -1) {
-        getClientInfo(parrentUserId)
-      }
-      return ()=>{        
-      }
-  }, [parrentUserId, userId,loading])
+    setValueToFieldsForm()
+    return () => {
+    }
+  }, [parrentUserId, loading, client.client])
 
 
- 
-  function getClientInfo(userId: number) {
-    axios({
-      method: 'get',
-      url: 'http://localhost:8080/client/getClient?id=' + userId
-    }).then(function (response) {
-      let temp : IClient = response.data as IClient
-      setClientInfo(temp)
-      setLoading(() => false)
-      setValuetoFunction()
-    }).catch(function (error) {
-      if (error.response) {
-        showMessage(error.response.data.message, "error");
-      }
-      else {
-        showMessage("Ошибка сервера, сервер недоступен", "error");
-      }
-    });
-  }
+
+
 
   async function saveClienInfo(values: any) {
     await axios({
@@ -113,18 +90,13 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
       url: 'http://localhost:8080/client/saveClient',
       withCredentials: false,
       data: {
-        "id": clientInfo.id,
+        "id": client.client.id,
         "firstName": values.fisrtname,
         "secondName": values.secondname,
         "phoneNumber": (values.prefix + values.phoneNumber),
         "birthDay": values.birthDay,
         "gender": values.gender,
       },
-    }).then(function (response){
-        let s : IClient = values as IClient
-        s.phoneNumber=(values.prefix + values.phoneNumber)
-        setClientInfo((e)=>e=s)
-        setValuetoFunction()
     }).catch(function (error) {
       if (error.response) {
         showMessage(error.response.data.message, "error");
@@ -142,13 +114,17 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
   };
 
   const handleOk = () => {
-    setConfirmLoading(()=>true);
-    setLoading(()=>true)
-    if (isChangedData(form.getFieldsValue())) {
-        saveClienInfo(form.getFieldsValue()).then(function () {
-          setOpen(()=>false);
-          setConfirmLoading(()=>false); 
-          setChangeFields(()=>false)
+    setConfirmLoading(() => true);
+    setLoading(() => true)
+    let s = form.getFieldsValue()
+    if (isChangedData(s)) {
+      saveClienInfo(s).then(function () {
+        s.phoneNumber = (s.prefix + s.phoneNumber)
+        updateClient(client.client.id)
+        setValueToFieldsForm()
+        setOpen(() => false);
+        setConfirmLoading(() => false);
+        setChangeFields(() => false)
       })
     }
 
@@ -164,37 +140,37 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
 
   function isChangedData(value: any): boolean {
     console.log(value)
-    console.log(clientInfo)
-    if (value.birthDay === dayjs(clientInfo.birthDay) &&
-      value.fisrtname === clientInfo.firstName &&
-      value.gender === clientInfo.gender &&
-      value.phoneNumber === clientInfo.phoneNumber.substring(4) &&
-      value.prefix === clientInfo.phoneNumber.substring(0, 4) &&
-      value.secondname === clientInfo.secondName) {
+    console.log(client.client.id)
+    if (value.birthDay === dayjs(client.client.birthDay) &&
+      value.fisrtname === client.client.firstName &&
+      value.gender === client.client.gender &&
+      value.phoneNumber === client.client.phoneNumber.substring(4) &&
+      value.prefix === client.client.phoneNumber.substring(0, 4) &&
+      value.secondname === client.client.secondName) {
       return false
     }
     return true
   }
 
-  function setValuetoFunction() {
+  function setValueToFieldsForm() {
     form.setFieldsValue({
-      birthDay: dayjs(clientInfo.birthDay),
-      fisrtname: clientInfo.firstName,
-      gender: clientInfo.gender,
-      phoneNumber: clientInfo.phoneNumber.substring(4),
-      prefix: clientInfo.phoneNumber.substring(0, 4),
-      secondname: clientInfo.secondName,
+      birthDay: dayjs(client.client.birthDay),
+      fisrtname: client.client.firstName,
+      gender: client.client.gender,
+      phoneNumber: client.client.phoneNumber.substring(4),
+      prefix: client.client.phoneNumber.substring(0, 4),
+      secondname: client.client.secondName,
     })
   }
 
   function resetForm() {
     form.setFieldsValue({
-      birthDay: dayjs(clientInfo.birthDay),
-      fisrtname: clientInfo.firstName,
-      gender: clientInfo.gender,
-      phoneNumber: clientInfo.phoneNumber.substring(4),
-      prefix: clientInfo.phoneNumber.substring(0, 4),
-      secondname: clientInfo.secondName,
+      birthDay: dayjs(client.client.birthDay),
+      fisrtname: client.client.firstName,
+      gender: client.client.gender,
+      phoneNumber: client.client.phoneNumber.substring(4),
+      prefix: client.client.phoneNumber.substring(0, 4),
+      secondname: client.client.secondName,
     })
     setChangeFields(false)
   }
@@ -221,7 +197,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
   return (
     <>
       {contextHolder}
-      <Skeleton loading={loading} active={true}>
+      <Skeleton loading={client.isLoading} active={true}>
         <Form
           {...formItemLayout}
           form={form}
@@ -291,7 +267,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
                     Save
                   </Button>
                 </Popconfirm>
-                <Button type="primary" name = "reset" danger onClick={() => { resetForm() }} >
+                <Button type="primary" name="reset" danger onClick={() => { resetForm() }} >
                   Reset
                 </Button>
               </Flex>
@@ -302,8 +278,6 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({parrentUse
             }
 
           </Form.Item>
-
-
         </Form>
       </Skeleton>
     </>

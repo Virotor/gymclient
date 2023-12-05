@@ -1,5 +1,5 @@
 
-import { Menu, Flex, Segmented, MenuProps } from 'antd';
+import { Menu, Flex, Segmented, MenuProps, Image } from 'antd';
 import React, { useState } from 'react';
 import type { FlexProps } from 'antd';
 import type { SegmentedProps } from 'antd/es/segmented';
@@ -15,18 +15,21 @@ import { logOut } from '../../redux/reducers/UserSlice';
 const boxStyle: React.CSSProperties = {
     width: '100%',
     height: 60,
-    borderRadius: 6,
-    border: '1px solid ',
+    border: 'none',
 };
 
 const menuStyle: React.CSSProperties = {
     display: 'flex',
     minWidth: '20%',
     height: 60,
-    borderRadius: 6,
-    border: '1px solid ',
+    border: 'none',
+    backgroundColor : 'black',
+    color : 'white',
 }
 
+const imageStyle : React.CSSProperties ={
+    width : 60, height : 60, position : 'absolute'
+}
 
 
 const NavMenu: React.FC = () => {
@@ -44,7 +47,13 @@ const NavMenu: React.FC = () => {
 
 
     return (
-        <Flex style={boxStyle} align={'flex-start'} justify={'flex-end'}>
+        <>
+        <img style = {imageStyle}
+               alt=""
+               src="/static/image/4fcf0b33-4fb6-46e8-8b09-f7c4769c89b4_1701716323410448138.png"
+            />
+
+        <Flex  align={'flex-start'} justify={'flex-end'}>
             <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" style={menuStyle} >
                 <MenuItem key={'home'}>
                     <Link className="text-dark" to="/">Home</Link>
@@ -75,6 +84,7 @@ const NavMenu: React.FC = () => {
                 }
             </Menu>
         </Flex >
+        </>
     )
 };
 
