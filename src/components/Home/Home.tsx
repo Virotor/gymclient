@@ -6,6 +6,7 @@ import { Button, Carousel, Col, Flex, Row, Image } from "antd";
 
 
 const styleCol: React.CSSProperties = { background: 'black', margin: '16px 16px', padding: '16px 16px', minWidth: 100 };
+const styleColSecond: React.CSSProperties = { background: 'black', margin: '16px 16px', padding: '16px 16px', minWidth: 100, alignItems : 'center', display : 'flow' };
 const rowStyle: React.CSSProperties = { background: 'black', padding: '8px 0px', margin: '5%' }
 const imageStyle: React.CSSProperties = { maxHeight: 400, maxWidth: 600, imageRendering: 'auto' }
 
@@ -44,18 +45,21 @@ const Home: React.FC = () => {
                </>
             </Col>
          </Row>
+         <div style={{ fontSize: 60, color: 'white', margin: '0px 30%' }}>
+            Free Workout Programs
+         </div>
          <Row style={rowStyle} gutter={40} >
-            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5}} >
-               Col
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
+               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
             </Col>
-            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5}}>
-               Col
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
+               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
             </Col>
-            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5}}>
-               Col
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
+               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
             </Col>
-            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5}}>
-               Col
+            <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
+               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
             </Col>
          </Row>
       </>
