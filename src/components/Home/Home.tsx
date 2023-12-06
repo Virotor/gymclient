@@ -1,4 +1,5 @@
 
+import { hover } from "@testing-library/user-event/dist/hover";
 import { useAppSelector } from "../../hooks";
 import { RootState } from "../../store";
 
@@ -6,9 +7,11 @@ import { Button, Carousel, Col, Flex, Row, Image } from "antd";
 
 
 const styleCol: React.CSSProperties = { background: 'black', margin: '16px 16px', padding: '16px 16px', minWidth: 100 };
-const styleColSecond: React.CSSProperties = { background: 'black', margin: '16px 16px', padding: '16px 16px', minWidth: 100, alignItems : 'center', display : 'flow' };
+const styleColSecond: React.CSSProperties = { background: 'black', margin: '16px 16px', padding: '16px 16px', minWidth: 100, alignItems: 'center', display: 'flow' };
 const rowStyle: React.CSSProperties = { background: 'black', padding: '8px 0px', margin: '5%' }
-const imageStyle: React.CSSProperties = { maxHeight: 400, maxWidth: 600, imageRendering: 'auto' }
+const imageStyle: React.CSSProperties = {
+   imageRendering: 'auto'
+};
 
 
 const contentStyle: React.CSSProperties = {
@@ -18,6 +21,16 @@ const contentStyle: React.CSSProperties = {
    textAlign: 'center',
    background: '#364d79',
 };
+
+const styleButton: React.CSSProperties = {
+   backgroundColor: 'white',
+   color: 'black',
+   width: 200,
+   height: 60,
+   borderRadius: 20,
+}
+
+
 
 
 const Home: React.FC = () => {
@@ -29,37 +42,39 @@ const Home: React.FC = () => {
             <Col xs={20} sm={16} md={12} lg={6} xl={8} style={styleCol}>
                <>
                   <p style={{ fontSize: 60, color: 'white', margin: 0 }}>make your</p>
-                  <p style={{ fontSize: 90, color: 'white', margin: 0 }}>BODY SHAPE</p>
-                  <p style={{ color: 'white' }}>Being physically active can improve your brain health,
+                  <p style={{ fontSize: 60, color: 'white', margin: 0, fontWeight: "bold" }}>BODY SHAPE</p>
+                  <p style={{ fontSize: 22, color: 'white' }}>Being physically active can improve your brain health,
                      help manage weight, reduce the risk of disease, strengthen bones and muscles,
                      and improve your ability to do everyday activities. Adults who si</p>
-                  <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 52, borderRadius: 20 }}>Get Started</Button>
+                  <Button type="primary" style={{ backgroundColor: 'yellow', color: 'black', width: 200, height: 52, borderRadius: 20 }}>Get Started</Button>
                </>
             </Col>
             <Col xs={2} sm={4} md={10} lg={16} xl={14} style={styleCol}>
                <>
                   <Image preview={false}
-                     src='/static/image/09e221bf-87c2-4915-b3da-444673e02f74_1701716323409524291.png'>
-                     {/* style = {imageStyle} */}
+                     src='/static/image/v1_96.png'
+                     style={imageStyle}
+                  >
+
                   </Image>
                </>
             </Col>
          </Row>
-         <div style={{ fontSize: 60, color: 'white', margin: '0px 30%' }}>
+         <div style={{ fontSize: 60, color: 'white', margin: '0px 0px 0px 7%' }}>
             Free Workout Programs
          </div>
          <Row style={rowStyle} gutter={40} >
             <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
-               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
+               <Button type="primary" style={styleButton}>Get Started</Button>
             </Col>
             <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
-               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
+               <Button type="primary" style={styleButton}>Get Started</Button>
             </Col>
             <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
-               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
+               <Button type="primary" style={styleButton}>Get Started</Button>
             </Col>
             <Col xs={{ span: 5, offset: 1 }} lg={{ span: 5 }} style={styleColSecond}>
-               <Button type="primary" style={{ backgroundColor: 'white', color: 'black', width: 200, height: 60, borderRadius: 20 }}>Get Started</Button>
+               <Button type="primary" style={styleButton}>Get Started</Button>
             </Col>
          </Row>
       </>

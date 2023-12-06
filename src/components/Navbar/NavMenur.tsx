@@ -50,7 +50,7 @@ const NavMenu: React.FC = () => {
         <>
         <img style = {imageStyle}
                alt=""
-               src="/static/image/4fcf0b33-4fb6-46e8-8b09-f7c4769c89b4_1701716323410448138.png"
+               src="/static/image/v1_225.png"
             />
 
         <Flex  align={'flex-start'} justify={'flex-end'}>
