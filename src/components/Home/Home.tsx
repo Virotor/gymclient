@@ -10,6 +10,16 @@ import { useNavigate } from "react-router";
 
 
 
+const styleButton: React.CSSProperties = {
+   backgroundColor: 'white',
+   color: 'black',
+   width: 200,
+   height: 60,
+   borderRadius: 20,
+}
+
+
+
 
 const Home: React.FC = () => {
 

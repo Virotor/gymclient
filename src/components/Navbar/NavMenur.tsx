@@ -44,9 +44,9 @@ const NavMenu: React.FC = () => {
 
     return (
         <>
-            <img style={imageStyle}
-                alt=""
-                src="/static/image/v9_52.png"
+        <img style = {imageStyle}
+               alt=""
+               src="/static/image/4fcf0b33-4fb6-46e8-8b09-f7c4769c89b4_1701716323410448138.png"
             />
 
             <Flex gap={30} className='headerStyle' align={'flex-start'} justify={'flex-end'}>
