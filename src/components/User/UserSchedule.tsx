@@ -46,37 +46,14 @@ export const UserSchedule: React.FC<PropsWithChildren<ScheduleProps>> = ({ paren
 
 
   const [scope, setScope] = useState('day')
-  const [isLoading, setIsLoading] = useState(true)
+
   const client = useAppSelector((state: RootState) => state.client)
   const schedule = useAppSelector((state: RootState) => state.schedule)
   const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    if (client.client.id !== -1) {
-      getUserSchedule().then(() => [
-        setIsLoading(() => false)
-      ])
-    }
-  }, [parentClientId])
 
 
-  async function getUserSchedule() {
-    await axios({
-      method: 'get',
-      url: 'http://localhost:8080/client/schedule?id=' + client.client.id,
-      withCredentials: false,
-    }).then(function (response) {
-      dispatch(takeSchedule(response.data as ISchedule[]))
-    }).catch(function (error) {
-      if (error.response) {
-        //showMessage(error.response.data.message, "error");
-      }
-      else {
-        //showMessage("Ошибка сервера, сервер недоступен", "error");
-      }
-
-    });
-  }
+ 
 
   function filterDateToday(currentDate: Date, compareDate: Date): boolean {
     if (
@@ -92,7 +69,7 @@ export const UserSchedule: React.FC<PropsWithChildren<ScheduleProps>> = ({ paren
 
     const current = dayjs(currentDate)
     const startCompare = dayjs(compareDate)
-    if (current.diff(startCompare, 'days') <= 7) {
+    if (current.diff(startCompare, 'days') <= 7 && current.diff(startCompare, 'days') >= 0) {
       return true
     }
     return false;
@@ -117,7 +94,7 @@ export const UserSchedule: React.FC<PropsWithChildren<ScheduleProps>> = ({ paren
 
 
   return (
-    <Skeleton loading={isLoading} active={true}>
+    <Skeleton loading={schedule.isLoading} active={true}>
       <Select
         defaultValue="Today"
         style={{ width: 120 }}

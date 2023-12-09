@@ -13,8 +13,11 @@ import { useEffect, useState } from 'react';
 import reportWebVitals from '../../reportWebVitals';
 import { ClientDiscription } from './UserDiscription';
 import { IClient } from '../../redux/interfaces/Client';
-import { takeClientInfo } from '../../redux/reducers/ClientSlice';
+import { takeClientGroups, takeClientInfo } from '../../redux/reducers/ClientSlice';
 import { RecordClient } from '../Record/RecordClient';
+import { takeSchedule } from '../../redux/reducers/ScheduleSlice';
+import { ISchedule } from '../../redux/interfaces/Schedule';
+import { IGroup } from '../../redux/interfaces/Group';
 
 
 const { TabPane } = Tabs
@@ -33,7 +36,8 @@ export const UserPage: React.FC = () => {
     // if (clientId !== -1 && isLoading) {
       
       getUserId(user.user.username).then(function () {
-        getClientInfo(clientId).then(() => console.log(client))
+        getClientInfo(clientId);
+        getUserSchedule(clientId);  
         setLoading(() => false)
       }
       )
@@ -42,7 +46,23 @@ export const UserPage: React.FC = () => {
   }, [user.user, isLoading])
 
 
+  async function getUserSchedule(clientId: number) {
+    await axios({
+      method: 'get',
+      url: 'http://localhost:8080/client/schedule?id=' + clientId,
+      withCredentials: false,
+    }).then(function (response) {
+      dispatch(takeSchedule(response.data as ISchedule[]))
+    }).catch(function (error) {
+      if (error.response) {
+        //showMessage(error.response.data.message, "error");
+      }
+      else {
+        //showMessage("Ошибка сервера, сервер недоступен", "error");
+      }
 
+    });
+  }
 
 
   async function getUserId(username: string) {
@@ -73,6 +93,7 @@ export const UserPage: React.FC = () => {
       let temp: IClient = response.data as IClient
       console.log(temp)
       dispatch(takeClientInfo(temp))
+      dispatch(takeClientGroups(response.data.groupTrainings as IGroup[]))
     }).catch(function (error) {
       if (error.response) {
         showMessage(error.response.data.message, "error");

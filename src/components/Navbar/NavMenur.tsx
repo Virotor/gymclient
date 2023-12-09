@@ -1,16 +1,13 @@
 
-import { Menu, Flex, Segmented, MenuProps, Image } from 'antd';
+import { Flex, Menu, MenuProps } from 'antd';
 import React, { useState } from 'react';
-import type { FlexProps } from 'antd';
-import type { SegmentedProps } from 'antd/es/segmented';
 
 
-import { NavItem, NavLink } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { RootState } from '../../store';
 import MenuItem from 'antd/es/menu/MenuItem';
+import { Link, NavLink } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logOut } from '../../redux/reducers/UserSlice';
+import { RootState } from '../../store';
 
 const boxStyle: React.CSSProperties = {
     width: '100%',
@@ -23,12 +20,12 @@ const menuStyle: React.CSSProperties = {
     minWidth: '20%',
     height: 60,
     border: 'none',
-    backgroundColor : 'black',
-    color : 'white',
+    backgroundColor: 'black',
+    color: 'white',
 }
 
-const imageStyle : React.CSSProperties ={
-    width : 60, height : 60, position : 'absolute'
+const imageStyle: React.CSSProperties = {
+    width: 60, height: 60, position: 'absolute'
 }
 
 
@@ -45,45 +42,43 @@ const NavMenu: React.FC = () => {
         setCurrent(e.key);
     };
 
-
     return (
         <>
-        <img style = {imageStyle}
-               alt=""
-               src="/static/image/4fcf0b33-4fb6-46e8-8b09-f7c4769c89b4_1701716323410448138.png"
+            <img style={imageStyle}
+                alt=""
+                src="/static/image/v9_52.png"
             />
 
-        <Flex  align={'flex-start'} justify={'flex-end'}>
-            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" style={menuStyle} >
-                <MenuItem key={'home'}>
-                    <Link className="text-dark" to="/">Home</Link>
-                </MenuItem>
+            <Flex gap={30} className='headerStyle' align={'flex-start'} justify={'flex-end'}>
+
+                <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>Home</NavLink>
+
                 {user.user.jwtToken.length == 0 ?
-                    <MenuItem key={'login'}>
-                        <Link className="text-dark" to="/login">Login</Link>
-                    </MenuItem>
+
+                    <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>Login</NavLink>
+
                     :
                     <>
                     </>
                 }
                 {user.user.jwtToken.length != 0 ?
-                    <MenuItem key={'account'}>
-                        <Link className="text-dark" to="/account">Account</Link>
-                    </MenuItem>
+
+                    <NavLink to="/account" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>Account</NavLink>
+
                     :
                     <>
                     </>
                 }
                 {user.user.jwtToken.length != 0 ?
-                    < MenuItem key={'logOut'}>
-                        <Link onClick={() => { dispatch(logOut()) }} className="text-dark" to="/">LogOut</Link>
-                    </MenuItem>
+
+                    <NavLink onClick={() => { dispatch(logOut()) }} to="/logOut" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>LogOut</NavLink>
+
                     :
                     <>
                     </>
                 }
-            </Menu>
-        </Flex >
+
+            </Flex >
         </>
     )
 };

@@ -1,0 +1,29 @@
+.layout {
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100%;
+}
+
+.headerStyle {
+    border: none;
+    color: white;
+    background-color: black;
+    height: 60
+}
+
+
+.footer {
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    flex: 0 0 auto;
+}
+
+
+.content {
+    flex: 1 0 auto;
+    min-height: calc(100vh-80px);
+}

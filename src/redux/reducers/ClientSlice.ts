@@ -44,12 +44,8 @@ export const clientSlice = createSlice({
         clientAddNewGroup : (state, action : PayloadAction<IGroup>) =>{
             state.client.groups.push(action.payload)
         },
-        clientDeleteGroup : (state, action : PayloadAction<IGroup>) =>{
-            let s = state.client.groups.findIndex(e => e == action.payload)
-            if(s!==-1){
-                state.client.groups.splice(s,1)
-            }
-            
+        clientDeleteGroup : (state, action : PayloadAction<number>) =>{
+            state.client.groups =  state.client.groups.filter((e)=>e.id!==action.payload)
         },
     },
 })

@@ -11,10 +11,12 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { IGroup, getGroupType, groupSkillType } from '../../redux/interfaces/Group';
 import { RootState } from '../../store';
 import { AddNewGroup } from '../Group/AddNewGroup';
+import { clientAddNewGroup, clientDeleteGroup } from '../../redux/reducers/ClientSlice';
+import { PopUp } from '../Record/PopUp';
 
 
 dayjs.extend(customParseFormat);
@@ -47,11 +49,13 @@ type GroupProps = {
 
 export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> = ({ parrentUserId }: GroupProps) => {
   const client = useAppSelector((state: RootState) => state.client)
+
+  const dispatch = useAppDispatch();
+
   const [messageApi, contextHolder] = message.useMessage()
   const [loading, setLoading] = useState(true)
 
   const [userId, setUserId] = useState(parrentUserId)
-  const [clientGroups, setClientGroups] = useState<IGroup[]>([initialState])
   const [groups, setGroups] = useState<IGroup[]>([initialState])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<{ text: string, value: string }[]>([])
@@ -75,6 +79,16 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
       filters: filters,
       onFilter: (value, record) => record.gropSkillType.indexOf(value as string) === 0,
     },
+    {
+      title: 'Action',
+      render: (text, record, index) => (
+          <Space size="middle">
+              <PopUp record={record} deleteRecord={deleteGroupClient} />
+          </Space>
+
+      )
+
+  },
   ];
 
 
@@ -89,31 +103,33 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
         value: item
       })
     })
+    setLoading(() => false)
+    setUserId(() => parrentUserId)
     setFilters(s)
-    getClientGroups().then(function () {
-      setLoading(() => false)
-      setUserId(() => parrentUserId)
-    })
+    // getClientGroups().then(function () {
+    //   setLoading(() => false)
+    //   setUserId(() => parrentUserId)
+    // })
 
   }, [parrentUserId, userId, loading])
 
 
-  async function getClientGroups() {
-    await axios({
-      method: 'get',
-      url: 'http://localhost:8080/client/groups?id=' + client.client.id
-    }).then(function (response) {
-      let temp: IGroup[] = response.data as IGroup[]
-      setClientGroups(temp)
-    }).catch(function (error) {
-      if (error.response) {
-        showMessage(error.response.data.message, "error");
-      }
-      else {
-        showMessage("Ошибка сервера, сервер недоступен", "error");
-      }
-    });
-  }
+  // async function getClientGroups() {
+  //   await axios({
+  //     method: 'get',
+  //     url: 'http://localhost:8080/client/groups?id=' + client.client.id
+  //   }).then(function (response) {
+  //     let temp: IGroup[] = response.data as IGroup[]
+  //     setClientGroups(temp)
+  //   }).catch(function (error) {
+  //     if (error.response) {
+  //       showMessage(error.response.data.message, "error");
+  //     }
+  //     else {
+  //       showMessage("Ошибка сервера, сервер недоступен", "error");
+  //     }
+  //   });
+  // }
 
   async function getAllGroups() {
     await axios({
@@ -126,6 +142,38 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
     })
 
   }
+
+
+  async function addNewGroup(group : IGroup) {
+    let uri : string = 'http://localhost:8080/groups/addClientToGroup?clientId='+client.client.id+'&groupId=' + group.id
+    await axios({
+      method: 'get',
+      url: uri,
+    }).then(function (response) {
+      console.log(response.data)
+      setGroups((temp)=>[...temp.filter((e)=>e.id!==group.id)])
+      dispatch(clientAddNewGroup(group))
+    })
+
+  }
+
+  async function deleteGroupClient(id : number ){
+      await deleteGroup(client.client.groups.find((e)=>e.id===id) as IGroup)
+  }
+
+  async function deleteGroup(group : IGroup) {
+    let uri : string = 'http://localhost:8080/groups/deleteClientGroup?clientId='+client.client.id+'&groupId=' + group.id
+    await axios({
+      method: 'get',
+      url: uri,
+    }).then(function (response) {
+      console.log(response.data)
+      setGroups((temp)=>[...temp, group])
+      dispatch(clientDeleteGroup(group.id))
+    })
+
+  }
+
 
 
 
@@ -161,7 +209,8 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
   };
 
   function filterGroup(groups: IGroup[]) {
-    return groups.filter((e) => e.groupType.toLowerCase() !== 'solo' && e.groupAgeType === getGroupType(client.client.birthDay))
+    console.log(client.client.groups)
+    return groups.filter((group)=>client.client.groups.findIndex((e)=>e.id===group.id)===-1).filter((e) => e.groupType.toLowerCase() !== 'solo' && e.groupAgeType === getGroupType(client.client.birthDay))
   }
 
   return (<>
@@ -170,13 +219,13 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
         <Button type="primary" onClick={showModal} size='large'>
           <PlusSquareOutlined /> group
         </Button>
-        <AddNewGroup addNewGroup={(group: IGroup) => { console.log(group) }} groups={filterGroup(groups)} isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} />
+        <AddNewGroup addNewGroup={addNewGroup} groups={filterGroup(groups)} isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} />
       </Space>
 
       <Table
         pagination={{ position: ['none', 'bottomRight'] }}
         columns={columns}
-        dataSource={clientGroups}
+        dataSource={client.client.groups.filter((e)=>e.groupType.toLowerCase()!=='solo')}
       />
     </Skeleton>
   </>)

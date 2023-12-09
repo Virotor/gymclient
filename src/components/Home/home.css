@@ -1,0 +1,80 @@
+.button {
+    background-color: #f8f8f8;
+    color: #000000;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    width: 200px;
+    height: 60px;
+    border-radius: 20px;
+}
+
+
+.button:hover,
+.button:focus ::after {
+    
+    background-color: rgb(255, 238, 0);
+}
+
+.column {
+    background: black;
+    margin: 16px 16px;
+    padding: 16px 16px;
+    min-width: 100;
+}
+
+.row {
+    background: black;
+    padding: 8px 0px;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+
+
+.columnVertical {
+    background: black;
+    margin: 16px 16px;
+    padding: 16px 16px;
+    min-width: 100;     
+    align-items: center;
+    display:  flex;
+}
+
+.columnVertical div {
+    display:  flex;
+    flex-direction: column;
+    padding: 0px 0px 20px 0px;
+    align-items: center;
+}
+
+.gallery {    
+    align-items: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.carousel {
+    background: black;    
+    align-items: center;
+    display:  flex;
+}
+
+.carousel img{
+    max-width: 500px;
+    max-height: 500px;
+}
+
+.fotter {
+    text-align: center;
+    font-size: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, cursive;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    margin: 40px 20% 40px 20%;
+}

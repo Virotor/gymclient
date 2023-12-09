@@ -21,14 +21,15 @@ export const ScheduleMounth : React.FC<ScheduleMounthProps> = ({schedule} : Sche
         const listCollapse : CollapseProps['items'] = []
         const now = new Date()
 
+
         let schedulseGroupsByDay = new Map<number, ISchedule[]>()
 
         schedule.forEach((e)=>{
-            if(schedulseGroupsByDay.has(new Date(e.date).getDay())){
-                schedulseGroupsByDay.get(new Date(e.date).getDay())?.push(e)
+            if(schedulseGroupsByDay.has(new Date(e.date).getDate())){
+                schedulseGroupsByDay.get(new Date(e.date).getDate())?.push(e)
             }
             else{
-                schedulseGroupsByDay.set(new Date(e.date).getDay(), new Array(e));
+                schedulseGroupsByDay.set(new Date(e.date).getDate(), new Array(e));
             }
         })
         

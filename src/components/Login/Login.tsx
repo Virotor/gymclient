@@ -27,33 +27,9 @@ const contentStyle: React.CSSProperties = {
 };
 
 
-
-
-const description = 'This is a description';
-const App: React.FC = () => (
-  <Steps
-    current={1}
-    status="error"
-    items={[
-      {
-        title: 'Finished',
-        description,
-      },
-      {
-        title: 'In Process',
-        description,
-      },
-      {
-        title: 'Waiting',
-        description,
-      },
-    ]}
-  />
-);
-
 const Login: React.FC = (props) => {
 
-    const count = useAppSelector((state: RootState) => state.user)
+    const user = useAppSelector((state: RootState) => state.user)
     const dispatch = useAppDispatch()
 
     const [currentTabs, setCurrenttabs] = useState(props == 'login' ? 1 : 2)
@@ -80,7 +56,6 @@ const Login: React.FC = (props) => {
                 </Tabs>
             </Content>
             <Footer>
-                <App/>
             </Footer>
         </Layout >
     )

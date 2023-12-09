@@ -12,8 +12,8 @@ const initialState: ScheduleState = {
 }
 
 export interface ScheduleState {
-    isLoading : boolean,
-    schedule : ISchedule[],
+    isLoading: boolean,
+    schedule: ISchedule[],
 }
 
 
@@ -27,29 +27,32 @@ export interface ScheduleState {
 // });
 export const headers = {
     "Content-Type": "application/json",
-    
-  };
 
-export interface ILogin  {
-    username : string,
-    password : string,
-    jwtToken  : string,
-    id : number
+};
+
+export interface ILogin {
+    username: string,
+    password: string,
+    jwtToken: string,
+    id: number
 }
 
 export const scheduleSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        takeSchedule: (state, schedules : PayloadAction<ISchedule[]>) => {
+        takeSchedule: (state, schedules: PayloadAction<ISchedule[]>) => {
             console.log(schedules)
-            state.schedule  = schedules.payload 
+            state.schedule = schedules.payload
         },
-        updateSchedule : (state, schedules : PayloadAction<ISchedule[]>) =>{
-            state.schedule  = schedules.payload 
+        updateSchedule: (state, schedules: PayloadAction<ISchedule[]>) => {
+            state.schedule = schedules.payload
         },
+        deleteSchedule: (state, action: PayloadAction<number>) => {
+            state.schedule = state.schedule.filter(e=>e.id!==action.payload)
+        }
     },
 })
 
-export const { takeSchedule,updateSchedule } = scheduleSlice.actions
+export const { takeSchedule, updateSchedule,deleteSchedule } = scheduleSlice.actions
 export default scheduleSlice.reducer
