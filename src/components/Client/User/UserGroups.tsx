@@ -11,11 +11,11 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { IGroup, getGroupType, groupSkillType } from '../../redux/interfaces/Group';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { IGroup, getGroupType, groupSkillType } from '../../../redux/interfaces/Group';
+import { RootState } from '../../../store';
 import { AddNewGroup } from '../Group/AddNewGroup';
-import { clientAddNewGroup, clientDeleteGroup } from '../../redux/reducers/ClientSlice';
+import { clientAddNewGroup, clientDeleteGroup } from '../../../redux/reducers/ClientSlice';
 import { PopUp } from '../Record/PopUp';
 
 
@@ -112,24 +112,6 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
     // })
 
   }, [parrentUserId, userId, loading])
-
-
-  // async function getClientGroups() {
-  //   await axios({
-  //     method: 'get',
-  //     url: 'http://localhost:8080/client/groups?id=' + client.client.id
-  //   }).then(function (response) {
-  //     let temp: IGroup[] = response.data as IGroup[]
-  //     setClientGroups(temp)
-  //   }).catch(function (error) {
-  //     if (error.response) {
-  //       showMessage(error.response.data.message, "error");
-  //     }
-  //     else {
-  //       showMessage("Ошибка сервера, сервер недоступен", "error");
-  //     }
-  //   });
-  // }
 
   async function getAllGroups() {
     await axios({

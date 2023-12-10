@@ -17,36 +17,16 @@ export interface ScheduleState {
 }
 
 
-// axios({
-//   method: 'post',
-//   url: '/user/12345',
-//   data: {
-//     firstName: 'Fred',
-//     lastName: 'Flintstone'
-//   }
-// });
-export const headers = {
-    "Content-Type": "application/json",
-
-};
-
-export interface ILogin {
-    username: string,
-    password: string,
-    jwtToken: string,
-    id: number
-}
 
 export const scheduleSlice = createSlice({
-    name: "user",
+    name: "schedule",
     initialState,
     reducers: {
         takeSchedule: (state, schedules: PayloadAction<ISchedule[]>) => {
-            console.log(schedules)
             state.schedule = schedules.payload
         },
-        updateSchedule: (state, schedules: PayloadAction<ISchedule[]>) => {
-            state.schedule = schedules.payload
+        updateSchedule: (state, schedules: PayloadAction<ISchedule>) => {
+            state.schedule.push(schedules.payload)
         },
         deleteSchedule: (state, action: PayloadAction<number>) => {
             state.schedule = state.schedule.filter(e=>e.id!==action.payload)

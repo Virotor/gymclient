@@ -1,6 +1,6 @@
 
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { IGroup, groupSkillType } from '../../redux/interfaces/Group'
+import { IGroup, groupSkillType } from '../../../redux/interfaces/Group'
 import { Button, Empty, Modal, Space, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { PlusSquareOutlined } from '@ant-design/icons';

@@ -1,19 +1,16 @@
 
-import logo from './logo.svg';
 import './App.css';
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Post } from './redux/interfaces/Post';
-import { RootState } from './store';
-import { Counter } from './components/Counter/Counter';
-import { Navigate, Route, RouteProps, Routes } from 'react-router';
-import Layout from './components/Layout ';
+import { enableMapSet } from 'immer';
+import { Navigate, Route, Routes } from 'react-router';
 import Home from './components/Home/Home';
+import Layout from './components/Layout ';
 import Login from './components/Login/Login';
-import { UserPage } from './components/User/UserPage';
+import { UserPage } from './components/Client/User/UserPage';
 import { useAppSelector } from './hooks';
+import { RootState } from './store';
 
+enableMapSet();
 
 function App() {
 
@@ -25,7 +22,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/account" element={<UserPage /> } />
+        {
+          user.user.username!=='' 
+          ?
+          <Route path="/account" element={<UserPage />} />
+          :
+          <>
+          </>
+        }
         <Route
           path="*"
           element={<Navigate to="/" />}

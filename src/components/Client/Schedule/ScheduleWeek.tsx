@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react"
-import { ISchedule } from '../../redux/interfaces/Schedule';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
 import { Collapse, CollapseProps } from "antd";
 import { ScheduleDay } from "./ScheduleDay";
 import dayjs from 'dayjs';

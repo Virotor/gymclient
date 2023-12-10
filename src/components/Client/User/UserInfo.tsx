@@ -13,16 +13,16 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 
 import { RangePickerProps } from 'antd/es/date-picker';
 import axios from 'axios';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { RootState } from '../../store';
-import { IClient } from '../../redux/interfaces/Client';
+import { RootState } from '../../../store';
+import { IClient } from '../../../redux/interfaces/Client';
 import { ClientDiscription } from './UserDiscription';
 
-import { takeClientInfo, loadingInfo, takeClientGroups, clientEditInfo, clientAddNewGroup, clientDeleteGroup } from '../../redux/reducers/ClientSlice'
+import { takeClientInfo, loadingInfo, takeClientGroups, clientEditInfo, clientAddNewGroup, clientDeleteGroup } from '../../../redux/reducers/ClientSlice'
 
 
 dayjs.extend(customParseFormat);

@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react"
-import { ISchedule } from "../../redux/interfaces/Schedule"
+import { ISchedule } from "../../../redux/interfaces/Schedule"
 import Table, { ColumnsType } from "antd/es/table"
 import { Empty, Space } from "antd"
 import { DownOutlined } from '@ant-design/icons';
@@ -39,7 +39,7 @@ const colunms: ColumnsType<ISchedule> = [
         title: 'Номер группы',
         render: (text, record, index) => (
             <Space size="middle">
-                <label>{record.group.groupType.toLowerCase() == 'solo' ? "Индивидуальное" : record.group.groupNumber}</label>
+                <label>{record.group?.groupType.toLowerCase() == 'solo' ? "Индивидуальное" : record.group?.groupNumber}</label>
             </Space>
 
         )

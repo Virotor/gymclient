@@ -2,7 +2,7 @@ import { Calendar, Skeleton,Badge } from 'antd';
 import axios from 'axios';
 import type { Dayjs } from 'dayjs';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { ISchedule } from '../../redux/interfaces/Schedule';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
 
 import type { BadgeProps, CalendarProps } from 'antd';
 

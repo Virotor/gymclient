@@ -1,10 +1,10 @@
 import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Button, Popconfirm } from "antd";
 import { PropsWithChildren, useState } from "react";
-import { useAppDispatch } from '../../hooks';
-import { ISchedule } from '../../redux/interfaces/Schedule';
-import { deleteSchedule } from '../../redux/reducers/ScheduleSlice';
-import { IGroup } from '../../redux/interfaces/Group';
+import { useAppDispatch } from '../../../hooks';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
+import { deleteSchedule } from '../../../redux/reducers/ScheduleSlice';
+import { IGroup } from '../../../redux/interfaces/Group';
 
 interface PopUpProps extends PropsWithChildren {
     record: ISchedule | IGroup;
@@ -14,7 +14,6 @@ export const PopUp: React.FC<PopUpProps> = ({ record, deleteRecord }: PopUpProps
 
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const dispatch = useAppDispatch();
 
 
 
@@ -25,7 +24,6 @@ export const PopUp: React.FC<PopUpProps> = ({ record, deleteRecord }: PopUpProps
 
     const handleOk = () => {
         setConfirmLoading(true);
-        console.log(record);
         confirmDelete(record).then(() => {
             setOpen(false);
             setConfirmLoading(false);

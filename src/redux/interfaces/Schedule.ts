@@ -8,7 +8,7 @@ export interface ISchedule {
     date: Date,
     time: Date,
     employee: IEmployee,
-    group: IGroup,
+    group: IGroup | null,
     trainingRoom: ITrainingRoom,
     id : number
 }

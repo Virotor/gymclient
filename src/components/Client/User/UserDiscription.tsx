@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { IClient } from '../../redux/interfaces/Client';
+import { IClient } from '../../../redux/interfaces/Client';
 import { Descriptions, DescriptionsProps } from 'antd';
 import dayjs from 'dayjs';
 import { render } from '@testing-library/react';
@@ -19,7 +19,7 @@ export const ClientDiscription: React.FC<ClientDiscriptionProps> = ({ client }: 
       key: '1',
       label: 'First name',
       children: <>
-      client.firstName
+      {client.firstName}
       </>,
     },
     {

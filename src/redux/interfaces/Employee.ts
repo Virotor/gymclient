@@ -11,7 +11,7 @@ export interface IEmployee{
 
     gender: number,
 
-    skiils : string
+    skills : string
 
     
 }

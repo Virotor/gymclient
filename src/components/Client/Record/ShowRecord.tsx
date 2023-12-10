@@ -1,12 +1,13 @@
 import { Space, Table } from "antd";
 import { ColumnsType } from "antd/es/table";
 import dayjs from 'dayjs';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { ISchedule } from '../../redux/interfaces/Schedule';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
+import { RootState } from '../../../store';
 import axios from 'axios';
 import { PopUp } from './PopUp';
-import { deleteSchedule } from "../../redux/reducers/ScheduleSlice";
+import { deleteSchedule } from "../../../redux/reducers/ScheduleSlice";
+import { updateEmployeeSchedule } from "../../../redux/reducers/EmployeeSchedules";
 
 
 
@@ -45,7 +46,7 @@ export const ShowRecord: React.FC = () => {
             title: 'Group number',
             render: (text, record, index) => (
                 <Space size="middle">
-                    <label>{record.group.groupType.toLowerCase() == 'solo' ? "Индивидуальное" : record.group.groupNumber}</label>
+                    <label>{record.group?.groupType.toLowerCase() == 'solo' ? "Индивидуальное" : record.group?.groupNumber}</label>
                 </Space>
     
             )
@@ -69,7 +70,7 @@ export const ShowRecord: React.FC = () => {
     const dispatch = useAppDispatch()
 
     function renderSchedule(schedule: ISchedule[]) {
-        return schedule.filter((e) => e.group.groupType.toLowerCase() == 'solo')
+        return schedule.filter((e) => e.group?.groupType.toLowerCase() == 'solo')
 
     }
 
@@ -78,11 +79,13 @@ export const ShowRecord: React.FC = () => {
         try {
            await axios({
                 method: 'get',
-                url: 'http://localhost:8080/schedule/delete/client/record?id=' + recordNumber,
+                url: 'http://localhost:8080/schedule/client/delete?id=' + recordNumber,
                 withCredentials: false,
             }
             )
+            let temp : ISchedule = {...schedule.schedule.find((e)=>e.id===recordNumber) as ISchedule, group : null}
             dispatch(deleteSchedule(recordNumber));
+            dispatch(updateEmployeeSchedule({schedule : temp, id : temp.employee.id}))
         }
         catch (e){
             console.log(e)

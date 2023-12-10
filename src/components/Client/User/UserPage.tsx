@@ -2,22 +2,22 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Image, Carousel, Form, Input, Layout, Tabs, message } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import type { RootState } from '../../store';
-import { auth, ILogin } from '../../redux/reducers/UserSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import type { RootState } from '../../../store';
+import { auth, ILogin } from '../../../redux/reducers/UserSlice';
 import { UserInfo } from './UserInfo';
 import { UserSchedule } from './UserSchedule';
 import { UserGroups } from './UserGroups';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import reportWebVitals from '../../reportWebVitals';
+import reportWebVitals from '../../../reportWebVitals';
 import { ClientDiscription } from './UserDiscription';
-import { IClient } from '../../redux/interfaces/Client';
-import { takeClientGroups, takeClientInfo } from '../../redux/reducers/ClientSlice';
+import { IClient } from '../../../redux/interfaces/Client';
+import { takeClientGroups, takeClientInfo } from '../../../redux/reducers/ClientSlice';
 import { RecordClient } from '../Record/RecordClient';
-import { takeSchedule } from '../../redux/reducers/ScheduleSlice';
-import { ISchedule } from '../../redux/interfaces/Schedule';
-import { IGroup } from '../../redux/interfaces/Group';
+import { takeSchedule } from '../../../redux/reducers/ScheduleSlice';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
+import { IGroup } from '../../../redux/interfaces/Group';
 
 
 const { TabPane } = Tabs
@@ -33,7 +33,6 @@ export const UserPage: React.FC = () => {
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    // if (clientId !== -1 && isLoading) {
       
       getUserId(user.user.username).then(function () {
         getClientInfo(clientId);

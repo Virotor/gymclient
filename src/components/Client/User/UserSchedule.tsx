@@ -3,10 +3,10 @@ import type { ColumnsType } from 'antd/es/table';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { ISchedule } from '../../redux/interfaces/Schedule';
-import { takeSchedule } from '../../redux/reducers/ScheduleSlice';
-import { RootState } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import { ISchedule } from '../../../redux/interfaces/Schedule';
+import { takeSchedule } from '../../../redux/reducers/ScheduleSlice';
+import { RootState } from '../../../store';
 import { ScheduleDay } from '../Schedule/ScheduleDay';
 import { ScheduleMounth } from '../Schedule/ScheduleMounth';
 import { ScheduleWeek } from '../Schedule/ScheduleWeek';
@@ -47,13 +47,13 @@ export const UserSchedule: React.FC<PropsWithChildren<ScheduleProps>> = ({ paren
 
   const [scope, setScope] = useState('day')
 
-  const client = useAppSelector((state: RootState) => state.client)
+
   const schedule = useAppSelector((state: RootState) => state.schedule)
-  const dispatch = useAppDispatch()
 
 
 
- 
+
+
 
   function filterDateToday(currentDate: Date, compareDate: Date): boolean {
     if (
