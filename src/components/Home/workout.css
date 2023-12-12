@@ -1,0 +1,53 @@
+
+  .div {
+    background: url('../../../public/static/image/v1_152.png') ;
+    background-size: contain;
+    height: 500px;
+    width: 400px;
+    margin: 0 auto;
+  }
+  
+  .div p {
+    display: none;
+    font-size: 30px;
+    font-weight: 700;
+    font-family: 'Segoe UI';
+    line-height: 300px;
+    text-align: center;
+    color: #fff;
+    animation: fade .5s linear forwards;
+  }
+  .div button{
+    display: none;
+    font-size: 10px;
+    font-family: 'Segoe UI';
+    text-align: center;
+    text-wrap: wrap;
+    color: #fff;
+    animation: fade .5s linear forwards;
+  }
+  
+  @keyframes fade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  .div:hover p{
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .div:hover button{
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  div, p{ 
+    transition: all 1s; 
+};

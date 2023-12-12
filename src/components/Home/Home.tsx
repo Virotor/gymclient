@@ -7,6 +7,7 @@ import { Button, Carousel, Col, Flex, Row, Image, FloatButton } from "antd";
 
 import './home.css'
 import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 
 
@@ -34,7 +35,9 @@ const Home: React.FC = () => {
 
    }
 
-
+   useEffect(()=>{
+      document.title = "Home"
+   }, [])
 
    return (
       <>
@@ -62,7 +65,7 @@ const Home: React.FC = () => {
          <div style={{ fontSize: 60, color: 'white', margin: '0px 0px 0px 7%' }}>
             Free Workout Programs
          </div>
-         <Row className="row"  >
+         <Row className="row">
             <Col className="columnVertical" xs={{ span: 5 }} lg={{ span: 5 }} >
                <div onMouseEnter={()=>console.log(1)}>
                   <Image

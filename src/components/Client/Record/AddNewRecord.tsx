@@ -95,8 +95,8 @@ export const AddNewReccord: React.FC = () => {
                 renderItem={(item) => (
                     <List.Item key={item.id}>
                         <List.Item.Meta
-                            //avatar={<Avatar src={item.picture.large} />}
-                            title={<a href="https://ant.design">{item.firstName + "   " + item.secondName}</a>}
+                            avatar={<Avatar size={100} src={"http://localhost:8080/image/get/employee?id=" + item.id} />}
+                            title={<p>{item.firstName + "   " + item.secondName}</p>}
                             description={item.phoneNumber} />
                         <ButtonItemEmployee item={item} getEmployeeSchedule={getEmployeeSchedules} addRecord={addRecord}  />
                     </List.Item>

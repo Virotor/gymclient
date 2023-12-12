@@ -8,6 +8,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logOut } from '../../redux/reducers/UserSlice';
 import { RootState } from '../../store';
+import { logOutUser } from '../../redux/utils/auth';
 
 const boxStyle: React.CSSProperties = {
     width: '100%',
@@ -71,7 +72,10 @@ const NavMenu: React.FC = () => {
                 }
                 {user.user.jwtToken.length != 0 ?
 
-                    <NavLink onClick={() => { dispatch(logOut()) }} to="/logOut" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>LogOut</NavLink>
+                    <NavLink onClick={() => { 
+                        logOutUser()
+                        dispatch(logOut()) 
+                    }} to="/logOut" style={({ isActive }) => ({ color: isActive ? 'yellow' : 'white' })}>LogOut</NavLink>
 
                     :
                     <>

@@ -2,62 +2,19 @@
 
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Alert, Button, Carousel, Form, Input, Layout, message } from 'antd';
-import { Content } from 'antd/es/layout/layout';
+import { Button, Col, Form, Input, Row, message } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
+import { ILogin, auth, role } from '../../redux/reducers/UserSlice';
 import type { RootState } from '../../store';
-import { auth, ILogin } from '../../redux/reducers/UserSlice';
 
 
-import React, { FormEvent, useState } from 'react';
 import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router';
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
 
-
-const headers = {
-  "Content-Type": "application/json",
-
-};
-const contentStyle: React.CSSProperties = {
-
-  color: '#fff',
-  textAlign: 'center',
-  marginLeft: "10%",
-  marginRight: "10%",
-  marginTop: "10%",
-  marginBottom: "10%"
-};
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
-};
-
-
+import styles from './login.module.scss'
+import { authUser } from '../../redux/utils/auth';
 
 const LoginForm: React.FC = () => {
   const [form] = Form.useForm();
@@ -75,27 +32,29 @@ const LoginForm: React.FC = () => {
         "username": values.username,
         "password": values.password
       },
-      headers: headers
     }).then(function (response) {
       console.log(response.data)
       const user: ILogin = {
         username: values.username,
         password: values.password,
         jwtToken: response.data,
-        id : response.data.id
+        id: response.data.id,
+        role : response.data.roles[0].authority.toLowerCase() as role
       }
+      authUser(user.password, user.username, user.jwtToken, user.role as string)
+      //dispatch(setRole((response.data.roles[0].authority as string).toLowerCase() as role))
       dispatch(auth(user))
       navigate("/account");
     }).catch(function (error) {
       if (error.response) {
         errorShow("Ошибка неверный логин или пароль")
       } else if (error.request) {
-        errorShow('Неверный логин или пароль')
+        errorShow('Сервер недоступен')
       }
     })
   }
 
-  const errorShow = (message : string) => {
+  const errorShow = (message: string) => {
     messageApi.open({
       type: 'error',
       content: message,
@@ -107,50 +66,44 @@ const LoginForm: React.FC = () => {
 
   return (
     <>{contextHolder}
-      <Form
-        name="normal_login"
-        className="login-form"
-        onFinish={onFinish}
-        {...formItemLayout}
-        {...tailFormItemLayout}
-        form={form}
-        style={{ maxWidth: 600 }}
-        scrollToFirstError
 
-      >
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: 'Please input your Username!' }]}
-        >
-          <Input
-            prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
-          />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          rules={[{ required: true, message: 'Please input your Password!' }]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Item>
-        <Form.Item>
+     
+          <Form
+            name="normal_login"
+            className={styles.login}
+            onFinish={onFinish}
+            form={form}
+            scrollToFirstError
+          >
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: 'Please input your Username!' }]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Username"
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: 'Please input your Password!' }]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button  htmlType="submit" className="login-form-button">
+                Log in
+              </Button>
+            </Form.Item>
 
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
-        </Form.Item>
+          </Form>
+       
+     
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="login-form-button">
-            Log in  
-          </Button>
-        </Form.Item>
-
-      </Form>
     </>
   );
 }

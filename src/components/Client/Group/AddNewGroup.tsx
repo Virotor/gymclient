@@ -20,7 +20,7 @@ interface AddNewGroupProps extends PropsWithChildren {
 
 
 export const AddNewGroup: React.FC<AddNewGroupProps> = ({ addNewGroup, groups, isModalOpen, handleOk, handleCancel }: AddNewGroupProps) => {
-    const [filters, setFilters] = useState<{ text: string, value: string }[]>([])
+
     const colunms: ColumnsType<IGroup> = [
 
         {
@@ -42,7 +42,7 @@ export const AddNewGroup: React.FC<AddNewGroupProps> = ({ addNewGroup, groups, i
         {
             title: 'gropSkillType',
             dataIndex: 'gropSkillType',
-            filters: filters,
+            filters: groupSkillType,
             onFilter: (value, record) => record.gropSkillType.indexOf(value as string) === 0,
 
         },
@@ -62,15 +62,7 @@ export const AddNewGroup: React.FC<AddNewGroupProps> = ({ addNewGroup, groups, i
 
     ]
 
-    useEffect(()=>{
-        let s: { text: string, value: string }[] = []
-        groupSkillType.forEach(item => {
-          s.push({
-            text: item,
-            value: item
-          })
-        })
-        setFilters(s)
+    useEffect(() => {
     }, [])
 
 

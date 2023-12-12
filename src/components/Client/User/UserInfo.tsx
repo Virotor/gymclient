@@ -13,46 +13,20 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-
+import { useAppSelector } from '../../../hooks';
+// import ImgCrop from 'antd-img-crop';
 import { RangePickerProps } from 'antd/es/date-picker';
 import axios from 'axios';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { RootState } from '../../../store';
-import { IClient } from '../../../redux/interfaces/Client';
-import { ClientDiscription } from './UserDiscription';
-
-import { takeClientInfo, loadingInfo, takeClientGroups, clientEditInfo, clientAddNewGroup, clientDeleteGroup } from '../../../redux/reducers/ClientSlice'
-
+import styles from './user.module.scss'
+import { UploaderImage } from './UploaderImage';
 
 dayjs.extend(customParseFormat);
 
 const { Option } = Select;
 
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 16,
-      offset: 8,
-    },
-  },
-};
 
 const disabledDate: RangePickerProps['disabledDate'] = (current: any) => {
   return current && current > dayjs().endOf('day');
@@ -62,9 +36,10 @@ const disabledDate: RangePickerProps['disabledDate'] = (current: any) => {
 type UserInfoProps = {
   parrentUserId: number;
   updateClient: (clientId: number) => void
+  updateImage: () => void
 }
 
-export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUserId, updateClient }: UserInfoProps) => {
+export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUserId, updateClient, updateImage }: UserInfoProps) => {
 
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage()
@@ -72,6 +47,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const client = useAppSelector((state: RootState) => state.client)
+  const user = useAppSelector((state: RootState) => state.user)
   const [isChangeFiedls, setChangeFields] = useState(false)
 
   useEffect(() => {
@@ -93,7 +69,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
         "id": client.client.id,
         "firstName": values.fisrtname,
         "secondName": values.secondname,
-        "phoneNumber": (values.prefix + values.phoneNumber),
+        "phoneNumber": values.phoneNumber,
         "birthDay": values.birthDay,
         "gender": values.gender,
       },
@@ -119,7 +95,6 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     let s = form.getFieldsValue()
     if (isChangedData(s)) {
       saveClienInfo(s).then(function () {
-        s.phoneNumber = (s.prefix + s.phoneNumber)
         updateClient(client.client.id)
         setValueToFieldsForm()
         setOpen(() => false);
@@ -144,8 +119,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     if (value.birthDay === dayjs(client.client.birthDay) &&
       value.fisrtname === client.client.firstName &&
       value.gender === client.client.gender &&
-      value.phoneNumber === client.client.phoneNumber.substring(4) &&
-      value.prefix === client.client.phoneNumber.substring(0, 4) &&
+      value.phoneNumber === client.client.phoneNumber &&
       value.secondname === client.client.secondName) {
       return false
     }
@@ -157,8 +131,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
       birthDay: dayjs(client.client.birthDay),
       fisrtname: client.client.firstName,
       gender: client.client.gender,
-      phoneNumber: client.client.phoneNumber.substring(4),
-      prefix: client.client.phoneNumber.substring(0, 4),
+      phoneNumber: client.client.phoneNumber,
       secondname: client.client.secondName,
     })
   }
@@ -168,8 +141,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
       birthDay: dayjs(client.client.birthDay),
       fisrtname: client.client.firstName,
       gender: client.client.gender,
-      phoneNumber: client.client.phoneNumber.substring(4),
-      prefix: client.client.phoneNumber.substring(0, 4),
+      phoneNumber: client.client.phoneNumber,
       secondname: client.client.secondName,
     })
     setChangeFields(false)
@@ -184,13 +156,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     });
   };
 
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 90 }}>
-        <Option value="375">+375</Option>
-      </Select>
-    </Form.Item>
-  );
+
 
 
 
@@ -198,91 +164,98 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     <>
       {contextHolder}
       <Skeleton loading={client.isLoading} active={true}>
-        <Form
-          {...formItemLayout}
-          form={form}
-          name="userinfo"
-          style={{ maxWidth: 600 }}
-          scrollToFirstError
-          onValuesChange={(e) => setChangeFields(() => true)}
-          onFinish={(e) => console.log(e)}
-        >
-          <Form.Item
-            name="fisrtname"
-            label="First Name"
-            tooltip="What do you want others to call you?"
-            rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="secondname"
-            label="Last Name"
-            tooltip="What do you want others to call you?"
-            rules={[{ required: true, message: 'Please input your secondname!', whitespace: true }]}
-          >
-            <Input />
-          </Form.Item>
+        <div className={styles.edit} >
+          <Form
+            form={form}
+            name="userinfo"
 
-          <Form.Item
-            name="phoneNumber"
-            label="Phone Number"
-            rules={[{ required: true, message: 'Please input your phone number!' }]}
+            scrollToFirstError
+            onValuesChange={(e) => setChangeFields(() => true)}
+            onFinish={(e) => console.log(e)}
           >
-            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            name="birthDay"
-            label="Birthday"
-            rules={[{ required: true, message: 'Please input birthday' }]}
-          >
-            <DatePicker placement={'bottomLeft'} disabledDate={disabledDate} />
+            <Form.Item
+              name="fisrtname"
+              label="First Name"
+              tooltip="What do you want others to call you?"
+              rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="secondname"
+              label="Last Name"
+              tooltip="What do you want others to call you?"
+              rules={[{ required: true, message: 'Please input your secondname!', whitespace: true }]}
+            >
+              <Input />
+            </Form.Item>
 
-          </Form.Item>
+            <Form.Item
+              name="phoneNumber"
+              label="Phone Number"
+              rules={[{ required: true, message: 'Please input your phone number!' }]}
+            >
+              <Input style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item
+              name="birthDay"
+              label="Birthday"
+              rules={[{ required: true, message: 'Please input birthday' }]}
+            >
+              <DatePicker placement={'bottomLeft'} disabledDate={disabledDate} />
+
+            </Form.Item>
 
 
-          <Form.Item
-            name="gender"
-            label="Gender"
-            rules={[{ required: true, message: 'Please select gender!' }]}
-          >
-            <Select placeholder="select your gender" >
-              <Option value="0">Male</Option>
-              <Option value="1">Female</Option>
-              <Option value="2">Other</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item {...tailFormItemLayout}>
-            {isChangeFiedls ?
-              <Flex gap="small">
-                <Popconfirm
-                  title="Title"
-                  description="You're sure save changes?"
-                  open={open}
-                  onConfirm={handleOk}
-                  okButtonProps={{ loading: confirmLoading }}
-                  onCancel={handleCancel}
-                >
-                  <Button name="save" type="primary" onClick={() => showPopconfirm()} >
-                    Save
+            <Form.Item
+              name="gender"
+              label="Gender"
+              rules={[{ required: true, message: 'Please select gender!' }]}
+            >
+              <Select placeholder="select your gender" >
+                <Option value="0">Male</Option>
+                <Option value="1">Female</Option>
+                <Option value="2">Other</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item>
+              {isChangeFiedls ?
+                <Flex gap="small">
+                  <Popconfirm
+                    title="Title"
+                    description="You're sure save changes?"
+                    open={open}
+                    onConfirm={handleOk}
+                    okButtonProps={{ loading: confirmLoading }}
+                    onCancel={handleCancel}
+                  >
+                    <Button name="save" type="primary" onClick={() => showPopconfirm()} >
+                      Save
+                    </Button>
+                  </Popconfirm>
+                  <Button type="primary" name="reset" danger onClick={() => { resetForm() }} >
+                    Reset
                   </Button>
-                </Popconfirm>
-                <Button type="primary" name="reset" danger onClick={() => { resetForm() }} >
-                  Reset
-                </Button>
-              </Flex>
+                </Flex>
+                :
+                <>
+                </>
+              }
 
-              :
-              <>
-              </>
-            }
+            </Form.Item>
 
-          </Form.Item>
-        </Form>
+          </Form>
+          <UploaderImage username={user.user.username} updateImage={updateImage}></UploaderImage>
+        </div>
       </Skeleton>
     </>
   );
 
+}
+
+export interface ImageProps extends PropsWithChildren {
+  username: string
+  updateImage: () => void
 }
 
 

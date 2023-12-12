@@ -24,4 +24,4 @@ export function getGroupType (birthDay : Date) {
 }
 
 
-export const groupSkillType = ['Beginner', 'Amateur', 'Professional', 'Master']
+export const groupSkillType = [{text :'Beginner', value :'beginner'}, {text :'Amateur', value :'amateur'},{text :'Professional', value :'professional'},{text :'Master', value :'Mmaster'}]

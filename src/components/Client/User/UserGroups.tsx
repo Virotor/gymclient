@@ -1,6 +1,7 @@
 import { PlusSquareOutlined, UserOutlined } from '@ant-design/icons';
 import {
   Button,
+  Empty,
   Skeleton,
   Space,
   Table,
@@ -58,7 +59,7 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
   const [userId, setUserId] = useState(parrentUserId)
   const [groups, setGroups] = useState<IGroup[]>([initialState])
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [filters, setFilters] = useState<{ text: string, value: string }[]>([])
+
 
   const columns: ColumnsType<DataType> = [
     {
@@ -66,7 +67,7 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
       dataIndex: 'groupNumber',
       sorter: (a, b) => a.groupAgeType > b.groupAgeType ? 1 : -1,
       filterSearch(input, record) {
-          return record.value == input
+        return record.value == input
       },
     },
     {
@@ -76,19 +77,19 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
     {
       title: 'gropSkillType',
       dataIndex: 'gropSkillType',
-      filters: filters,
+      filters: groupSkillType,
       onFilter: (value, record) => record.gropSkillType.indexOf(value as string) === 0,
     },
     {
       title: 'Action',
       render: (text, record, index) => (
-          <Space size="middle">
-              <PopUp record={record} deleteRecord={deleteGroupClient} />
-          </Space>
+        <Space size="middle">
+          <PopUp record={record} deleteRecord={deleteGroupClient} />
+        </Space>
 
       )
 
-  },
+    },
   ];
 
 
@@ -96,21 +97,9 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
 
   useEffect(() => {
 
-    let s: { text: string, value: string }[] = []
-    groupSkillType.forEach(item => {
-      s.push({
-        text: item,
-        value: item
-      })
-    })
+
     setLoading(() => false)
     setUserId(() => parrentUserId)
-    setFilters(s)
-    // getClientGroups().then(function () {
-    //   setLoading(() => false)
-    //   setUserId(() => parrentUserId)
-    // })
-
   }, [parrentUserId, userId, loading])
 
   async function getAllGroups() {
@@ -119,38 +108,36 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
       url: 'http://localhost:8080/groups/all'
     }).then(function (response) {
       let temp: IGroup[] = response.data as IGroup[]
-      console.log(temp)
       setGroups(() => temp)
     })
 
   }
 
 
-  async function addNewGroup(group : IGroup) {
-    let uri : string = 'http://localhost:8080/groups/addClientToGroup?clientId='+client.client.id+'&groupId=' + group.id
+  async function addNewGroup(group: IGroup) {
+    let uri: string = 'http://localhost:8080/groups/addClientToGroup?clientId=' + client.client.id + '&groupId=' + group.id
     await axios({
       method: 'get',
       url: uri,
     }).then(function (response) {
-      console.log(response.data)
-      setGroups((temp)=>[...temp.filter((e)=>e.id!==group.id)])
+      setGroups((temp) => [...temp.filter((e) => e.id !== group.id)])
       dispatch(clientAddNewGroup(group))
     })
 
   }
 
-  async function deleteGroupClient(id : number ){
-      await deleteGroup(client.client.groups.find((e)=>e.id===id) as IGroup)
+  async function deleteGroupClient(id: number) {
+    await deleteGroup(client.client.groups.find((e) => e.id === id) as IGroup)
   }
 
-  async function deleteGroup(group : IGroup) {
-    let uri : string = 'http://localhost:8080/groups/deleteClientGroup?clientId='+client.client.id+'&groupId=' + group.id
+  async function deleteGroup(group: IGroup) {
+    let uri: string = 'http://localhost:8080/groups/deleteClientGroup?clientId=' + client.client.id + '&groupId=' + group.id
     await axios({
       method: 'get',
       url: uri,
     }).then(function (response) {
       console.log(response.data)
-      setGroups((temp)=>[...temp, group])
+      setGroups((temp) => [...temp, group])
       dispatch(clientDeleteGroup(group.id))
     })
 
@@ -191,8 +178,7 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
   };
 
   function filterGroup(groups: IGroup[]) {
-    console.log(client.client.groups)
-    return groups.filter((group)=>client.client.groups.findIndex((e)=>e.id===group.id)===-1).filter((e) => e.groupType.toLowerCase() !== 'solo' && e.groupAgeType === getGroupType(client.client.birthDay))
+    return groups.filter((group) => client.client.groups.findIndex((e) => e.id === group.id) === -1).filter((e) => e.groupType.toLowerCase() !== 'solo' && e.groupAgeType === getGroupType(client.client.birthDay))
   }
 
   return (<>
@@ -203,12 +189,27 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
         </Button>
         <AddNewGroup addNewGroup={addNewGroup} groups={filterGroup(groups)} isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} />
       </Space>
+      {client.client.groups.filter((e) => e.groupType.toLowerCase() !== 'solo').length > 0
+        ?
+        <Table
+          pagination={{ position: ['none', 'bottomRight'] }}
+          columns={columns}
+          dataSource={client.client.groups.filter((e) => e.groupType.toLowerCase() !== 'solo')}
+        />
+        :
+        <Empty
+          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+          imageStyle={{ height: 60 }}
+          description={
+            <span>
+              In this day not
+            </span>
+          }
+        >
+        </Empty>
+      }
 
-      <Table
-        pagination={{ position: ['none', 'bottomRight'] }}
-        columns={columns}
-        dataSource={client.client.groups.filter((e)=>e.groupType.toLowerCase()!=='solo')}
-      />
+
     </Skeleton>
   </>)
 }

@@ -15,36 +15,36 @@ import {
 } from 'antd';
 import { useAppDispatch } from '../../hooks';
 import axios from 'axios';
-
+import styles from './login.module.scss'
 
 
 dayjs.extend(customParseFormat);
 const { Option } = Select;
 
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-    },
-};
+// const formItemLayout = {
+//     labelCol: {
+//         xs: { span: 24 },
+//         sm: { span: 8 },
+//     },
+//     wrapperCol: {
+//         xs: { span: 24 },
+//         sm: { span: 16 },
+//     },
+// };
 
-const tailFormItemLayout = {
-    wrapperCol: {
-        xs: {
-            span: 24,
-            offset: 0,
-        },
-        sm: {
-            span: 16,
-            offset: 8,
-        },
-    },
-};
+// const tailFormItemLayout = {
+//     wrapperCol: {
+//         xs: {
+//             span: 24,
+//             offset: 0,
+//         },
+//         sm: {
+//             span: 16,
+//             offset: 8,
+//         },
+//     },
+// };
 
 
 const disabledDate: RangePickerProps['disabledDate'] = (current: any) => {
@@ -67,9 +67,9 @@ export const RegisterForm: React.FC = () => {
                 "userRole": [{ 'name': "ROLE_USER", 'id': 1 }],  
             },
             'manDTO': {
-                "firstName": values.fisrstname,
+                "firstName": values.firstname,
                 "secondName": values.secondname,
-                "phoneNumber": (values.prefix + values.phoneNumber),
+                "phoneNumber": values.phoneNumber,
                 "birthDay": values.birthDay,    
                 "gender": values.gender,
             }
@@ -103,21 +103,12 @@ export const RegisterForm: React.FC = () => {
         });
     };
 
-    const prefixSelector = (
-        <Form.Item name="prefix" noStyle>
-            <Select style={{ width: 90 }}>
-                <Option value="+375">+375</Option>
-            </Select>
-        </Form.Item>
-    );
-
-
 
     return (
         <>
             {contextHolder}
-            <Form
-                {...formItemLayout}
+            <Form className={styles.register}
+                // {...formItemLayout}
                 form={form}
                 name="register"
                 onFinish={onFinish}
@@ -125,34 +116,30 @@ export const RegisterForm: React.FC = () => {
                 scrollToFirstError
             >
                 <Form.Item
-                    name="fisrtname"
-                    label="FirstName"
+                    name="firstname"
                     tooltip="What do you want others to call you?"
                     rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
                 >
-                    <Input />
+                    <Input placeholder="First name" />
                 </Form.Item>
                 <Form.Item
                     name="secondname"
-                    label="SecondName"
                     tooltip="What do you want others to call you?"
                     rules={[{ required: true, message: 'Please input your secondname!', whitespace: true }]}
                 >
-                    <Input />
+                    <Input placeholder="Last name"/>
                 </Form.Item>
 
                 <Form.Item
                     name="username"
-                    label="Username"
                     tooltip="What do you want others to call you?"
                     rules={[{ required: true, message: 'Please input your nickname!', whitespace: true }]}
                 >
-                    <Input />
+                    <Input placeholder="Username"/>
                 </Form.Item>
 
                 <Form.Item
                     name="password"
-                    label="Password"
                     rules={[
                         {
                             required: true,
@@ -161,12 +148,11 @@ export const RegisterForm: React.FC = () => {
                     ]}
                     hasFeedback
                 >
-                    <Input.Password />
+                    <Input.Password placeholder="Password"/>
                 </Form.Item>
 
                 <Form.Item
                     name="confirm"
-                    label="Confirm Password"
                     dependencies={['password']}
                     hasFeedback
                     rules={[
@@ -184,13 +170,12 @@ export const RegisterForm: React.FC = () => {
                         }),
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password placeholder="Confirm Password"/>
                 </Form.Item>
 
 
                 <Form.Item
                     name="email"
-                    label="E-mail"
                     rules={[
                         {
                             type: 'email',
@@ -202,18 +187,16 @@ export const RegisterForm: React.FC = () => {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input placeholder='Email'/>
                 </Form.Item>
                 <Form.Item
                     name="phoneNumber"
-                    label="Phone Number"
                     rules={[{ required: true, message: 'Please input your phone number!' }]}
                 >
-                    <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                    <Input placeholder='Phone Number' style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item
                     name="birthDay"
-                    label="Birthday"
                     rules={[{ required: true, message: 'Please input birthday' }]}
                 >
                     <DatePicker placement={'bottomLeft'} disabledDate={disabledDate} />
@@ -222,7 +205,6 @@ export const RegisterForm: React.FC = () => {
 
                 <Form.Item
                     name="gender"
-                    label="Gender"
                     rules={[{ required: true, message: 'Please select gender!' }]}
                 >
                     <Select placeholder="select your gender">
@@ -240,14 +222,14 @@ export const RegisterForm: React.FC = () => {
                                 value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
                         },
                     ]}
-                    {...tailFormItemLayout}
+                    // {...tailFormItemLayout}
                 >
                     <Checkbox>
                         I have read the <a href="">agreement</a>
                     </Checkbox>
                 </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
-                    <Button type="primary" htmlType="submit">
+                <Form.Item>
+                    <Button  htmlType="submit">
                         Register
                     </Button>
                 </Form.Item>

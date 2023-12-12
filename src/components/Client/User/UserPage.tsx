@@ -1,26 +1,23 @@
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Image, Carousel, Form, Input, Layout, Tabs, message } from 'antd';
-import { Content } from 'antd/es/layout/layout';
+import { Anchor, Breadcrumb, Col, FloatButton, Modal, Row, Tabs, message } from 'antd';
 
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import type { RootState } from '../../../store';
-import { auth, ILogin } from '../../../redux/reducers/UserSlice';
-import { UserInfo } from './UserInfo';
-import { UserSchedule } from './UserSchedule';
-import { UserGroups } from './UserGroups';
+import { RcFile } from 'antd/es/upload';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import reportWebVitals from '../../../reportWebVitals';
-import { ClientDiscription } from './UserDiscription';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { IClient } from '../../../redux/interfaces/Client';
-import { takeClientGroups, takeClientInfo } from '../../../redux/reducers/ClientSlice';
-import { RecordClient } from '../Record/RecordClient';
-import { takeSchedule } from '../../../redux/reducers/ScheduleSlice';
-import { ISchedule } from '../../../redux/interfaces/Schedule';
 import { IGroup } from '../../../redux/interfaces/Group';
-
-
-const { TabPane } = Tabs
+import { ISchedule } from '../../../redux/interfaces/Schedule';
+import { takeClientGroups, takeClientInfo } from '../../../redux/reducers/ClientSlice';
+import { takeSchedule } from '../../../redux/reducers/ScheduleSlice';
+import type { RootState } from '../../../store';
+import { RecordClient } from '../Record/RecordClient';
+import { ClientDiscription } from './UserDiscription';
+import { UserGroups } from './UserGroups';
+import { UserInfo } from './UserInfo';
+import { UserSchedule } from './UserSchedule';
+import styles from './user.module.scss';
+import { getClientInfo } from '../../../redux/api/Client/APICalls';
+import { PlusCircleTwoTone, EditTwoTone,UpCircleTwoTone,DownCircleTwoTone  } from '@ant-design/icons';
 
 export const UserPage: React.FC = () => {
 
@@ -29,21 +26,34 @@ export const UserPage: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const [clientId, setClientId] = useState(-1)
   const [isLoading, setLoading] = useState(true)
+  const [updateImage, setUpdateImage] = useState(true)
   const client = useAppSelector((state: RootState) => state.client)
   const dispatch = useAppDispatch()
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
-      
-      getUserId(user.user.username).then(function () {
-        getClientInfo(clientId);
-        getUserSchedule(clientId);  
-        setLoading(() => false)
-      }
-      )
-    
+    console.log(user)
+    getUserId(user.user.username).then(function () {
+      takeClient(clientId);
+      getUserSchedule(clientId);
+      setLoading(() => false)
+    }
+    )
+    document.title = "Account"
 
   }, [user.user, isLoading])
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
 
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   async function getUserSchedule(clientId: number) {
     await axios({
@@ -84,25 +94,39 @@ export const UserPage: React.FC = () => {
     });
   }
 
-  async function getClientInfo(clientId: number) {
-    await axios({
-      method: 'get',
-      url: 'http://localhost:8080/client/info?id=' + clientId
-    }).then(function (response) {
-      let temp: IClient = response.data as IClient
-      console.log(temp)
-      dispatch(takeClientInfo(temp))
-      dispatch(takeClientGroups(response.data.groupTrainings as IGroup[]))
-    }).catch(function (error) {
-      if (error.response) {
-        showMessage(error.response.data.message, "error");
-      }
-      else {
-        showMessage("Ошибка сервера, сервер недоступен", "error");
-      }
-    });
-  }
 
+
+  // async function getClientAvatar(clientId: number) {
+  //   await axios({
+  //     method: 'get',
+  //     url: 'http://localhost:8080/client/get/avatar?id=' + clientId
+  //   }).then(async function (response) {
+  //     console.log(response)
+  //     let image: RcFile = response.data as RcFile
+  //     let src: string = await new Promise((resolve) => {
+  //       const reader = new FileReader();
+  //       reader.readAsDataURL(image);
+  //       reader.onload = () => resolve(reader.result as string);
+  //     });
+  //     let path = '/avatar.png';
+  //   }).catch(function (error) {
+  //     if (error.response) {
+  //       showMessage(error.response.data.message, "error");
+  //     }
+  //     else {
+  //       showMessage("Ошибка сервера, сервер недоступен", "error");
+  //     }
+  //   });
+  // }
+
+  function takeClient(clientId: number) {
+    if (clientId !== -1) {
+      getClientInfo(clientId, showMessage).then((value) => {
+        dispatch(takeClientInfo(value.data as IClient))
+        dispatch(takeClientGroups(value.data.groupTrainings as IGroup[]))
+      })
+    }
+  };
 
 
   const showMessage = (message: string, type: any) => {
@@ -113,31 +137,97 @@ export const UserPage: React.FC = () => {
     });
   };
 
+  const handleUpdateImage = () => {
+    console.log("update")
+    setUpdateImage(!updateImage)
+  }
+
+
+  const items = [
+    {
+      key: 'part-1',
+      href: '#part-1',
+      title: 'About',
+    },
+    {
+      key: 'part-2',
+      href: '#part-2',
+      title: 'Schedule',
+    },
+    {
+      key: 'part-3',
+      href: '#part-3',
+      title: 'Groups',
+    },
+    {
+      key: 'part-4',
+      href: '#part-4',
+      title: 'Records',
+    },
+  ]
+
   return (
-    <Layout>
-      <Content style={{ padding: '0 50px', marginLeft: "10%", marginRight: "10%", marginTop: "10%", marginBottom: "10%" }}>
-        <Tabs
-          tabPosition={'left'}
-          defaultActiveKey="1"
-        >
-          <TabPane tab="About" key="1" >
-            <ClientDiscription client={client.client} />
-          </TabPane>
-          <TabPane tab="Edit info" key="2" >
-            <UserInfo parrentUserId={clientId} updateClient={getClientInfo} />
-          </TabPane>
-          <TabPane tab="Schedule" key="3">
-            <UserSchedule parentClientId={clientId} />
-          </TabPane>
-          <TabPane tab="Groups" key="4">
-            <UserGroups parrentUserId={clientId} />
-          </TabPane>
-          <TabPane tab="Records" key="5">
-            <RecordClient />
-          </TabPane>
-        </Tabs>
-      </Content>
-    </Layout >
+    <>
+     <div >
+      <Breadcrumb className={styles.anchor} 
+        //direction="horizontal"
+        items={items}
+      />
+    </div> 
+    
+    {/* <div className={styles.component}> */}
+
+     {contextHolder}
+     <Row className={styles.rowuserpage}>
+        <Col id='part-1' className={styles.coluserpage}>
+        <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
+           About
+         </div>
+         <ClientDiscription client={client.client} update={updateImage} />
+       </Col> 
+       <Col id='part-2' className={styles.coluserpage}>
+         <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
+           Schedule 
+         </div>
+         <UserSchedule parentClientId={clientId} />
+       </Col>
+       <Col id='part-3' className={styles.coluserpage}>
+         <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
+           Groups
+         </div>
+         <UserGroups parrentUserId={clientId} />
+       </Col>
+       <Col id='part-4' className={styles.coluserpage}>
+         <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
+           Records
+         </div>
+         <RecordClient />
+       </Col>
+       <Modal title="Edit info" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+         <UserInfo parrentUserId={clientId} updateClient={takeClient} updateImage={handleUpdateImage} />
+       </Modal>
+     </Row>
+     
+     <FloatButton.Group
+       //onClick={() => setOpen(!open)}
+       //open={open}
+       trigger="hover"
+       style={{ right: 24 }}
+       icon={  <UpCircleTwoTone /> }
+     >
+       <FloatButton 
+       icon = { <EditTwoTone />}onClick={showModal}
+       tooltip={<div>Edit info</div>}
+        />
+       {/* <FloatButton 
+       icon={<PlusCircleTwoTone />} 
+       tooltip={<div>Add group</div>}
+       /> */}
+     </FloatButton.Group>
+   {/* </div> */}
+    </>
+   
+
   )
 }
 
