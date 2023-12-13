@@ -46,7 +46,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const client = useAppSelector((state: RootState) => state.client)
+  const employee = useAppSelector((state: RootState) => state.employee)
   const user = useAppSelector((state: RootState) => state.user)
   const [isChangeFiedls, setChangeFields] = useState(false)
 
@@ -54,7 +54,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     setValueToFieldsForm()
     return () => {
     }
-  }, [parrentUserId, loading, client.client])
+  }, [parrentUserId, loading, employee.employee])
 
 
 
@@ -63,10 +63,10 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
   async function saveClienInfo(values: any) {
     await axios({
       method: 'post',
-      url: 'http://localhost:8080/client/saveClient',
+      url: 'http://localhost:8080/employee/saveEmployee',
       withCredentials: false,
       data: {
-        "id": client.client.id,
+        "id": employee.employee.id,
         "firstName": values.fisrtname,
         "secondName": values.secondname,
         "phoneNumber": values.phoneNumber,
@@ -95,7 +95,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
     let s = form.getFieldsValue()
     if (isChangedData(s)) {
       saveClienInfo(s).then(function () {
-        updateClient(client.client.id)
+        updateClient(employee.employee.id)
         setValueToFieldsForm()
         setOpen(() => false);
         setConfirmLoading(() => false);
@@ -115,12 +115,12 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
 
   function isChangedData(value: any): boolean {
     console.log(value)
-    console.log(client.client.id)
-    if (value.birthDay === dayjs(client.client.birthDay) &&
-      value.fisrtname === client.client.firstName &&
-      value.gender === client.client.gender &&
-      value.phoneNumber === client.client.phoneNumber &&
-      value.secondname === client.client.secondName) {
+    console.log(employee.employee.id)
+    if (value.birthDay === dayjs(employee.employee.birthDay) &&
+      value.fisrtname === employee.employee.firstName &&
+      value.gender === employee.employee.gender &&
+      value.phoneNumber === employee.employee.phoneNumber &&
+      value.secondname === employee.employee.secondName) {
       return false
     }
     return true
@@ -128,21 +128,21 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
 
   function setValueToFieldsForm() {
     form.setFieldsValue({
-      birthDay: dayjs(client.client.birthDay),
-      fisrtname: client.client.firstName,
-      gender: client.client.gender,
-      phoneNumber: client.client.phoneNumber,
-      secondname: client.client.secondName,
+      birthDay: dayjs(employee.employee.birthDay),
+      fisrtname: employee.employee.firstName,
+      gender: employee.employee.gender,
+      phoneNumber: employee.employee.phoneNumber,
+      secondname: employee.employee.secondName,
     })
   }
 
   function resetForm() {
     form.setFieldsValue({
-      birthDay: dayjs(client.client.birthDay),
-      fisrtname: client.client.firstName,
-      gender: client.client.gender,
-      phoneNumber: client.client.phoneNumber,
-      secondname: client.client.secondName,
+      birthDay: dayjs(employee.employee.birthDay),
+      fisrtname: employee.employee.firstName,
+      gender: employee.employee.gender,
+      phoneNumber: employee.employee.phoneNumber,
+      secondname: employee.employee.secondName,
     })
     setChangeFields(false)
   }
@@ -163,7 +163,7 @@ export const UserInfo: React.FC<PropsWithChildren<UserInfoProps>> = ({ parrentUs
   return (
     <>
       {contextHolder}
-      <Skeleton loading={client.isLoading} active={true}>
+      <Skeleton loading={employee.isLoading} active={true}>
         <div className={styles.edit} >
           <Form
             form={form}

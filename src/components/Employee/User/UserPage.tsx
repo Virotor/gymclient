@@ -1,30 +1,28 @@
-import { Anchor, Breadcrumb, Col, FloatButton, Modal, Row, Tabs, message } from 'antd';
+import { Breadcrumb, Col, FloatButton, Modal, Row, message } from 'antd';
 
-import { RcFile } from 'antd/es/upload';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { IClient } from '../../../redux/interfaces/Client';
-import { IGroup } from '../../../redux/interfaces/Group';
 import { ISchedule } from '../../../redux/interfaces/Schedule';
-import { takeClientGroups, takeClientInfo } from '../../../redux/reducers/ClientSlice';
 import { takeSchedule } from '../../../redux/reducers/ScheduleSlice';
 import type { RootState } from '../../../store';
-import { RecordClient } from '../Record/RecordClient';
+// import { RecordClient } from '../Record/RecordClient';
+import { EditTwoTone, UpCircleTwoTone } from '@ant-design/icons';
+import { getEmployeeInfo } from '../../../redux/api/Employee/APICalls';
+import { IEmployee } from '../../../redux/interfaces/Employee';
+import { takeEmployeeInfo } from '../../../redux/reducers/EmployeeSlice';
 import { ClientDiscription } from './UserDiscription';
 import { UserGroups } from './UserGroups';
 import { UserInfo } from './UserInfo';
 import { UserSchedule } from './UserSchedule';
 import styles from './user.module.scss';
-import { getClientInfo } from '../../../redux/api/Client/APICalls';
-import { PlusCircleTwoTone, EditTwoTone,UpCircleTwoTone,DownCircleTwoTone  } from '@ant-design/icons';
 
-export const UserPage: React.FC = () => {
+export const UserPageEmployee: React.FC = () => {
 
 
   const user = useAppSelector((state: RootState) => state.user)
   const [messageApi, contextHolder] = message.useMessage()
-  const [clientId, setClientId] = useState(-1)
+  const [employeeId, setEmployeeId] = useState(-1)
   const [isLoading, setLoading] = useState(true)
   const [updateImage, setUpdateImage] = useState(true)
   const client = useAppSelector((state: RootState) => state.client)
@@ -35,8 +33,8 @@ export const UserPage: React.FC = () => {
   useEffect(() => {
     console.log(user)
     getUserId(user.user.username).then(function () {
-      takeClient(clientId);
-      getUserSchedule(clientId);
+      takeClient(employeeId);
+      getUserSchedule(employeeId);
       setLoading(() => false)
     }
     )
@@ -55,10 +53,10 @@ export const UserPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  async function getUserSchedule(clientId: number) {
+  async function getUserSchedule(employeeId: number) {
     await axios({
       method: 'get',
-      url: 'http://localhost:8080/client/schedule?id=' + clientId,
+      url: 'http://localhost:8080/employee/getSchedule?id=' + employeeId,
       withCredentials: false,
     }).then(function (response) {
       dispatch(takeSchedule(response.data as ISchedule[]))
@@ -77,10 +75,11 @@ export const UserPage: React.FC = () => {
   async function getUserId(username: string) {
     await axios({
       method: 'get',
-      url: 'http://localhost:8080/client/getClientIdByUserName?userName=' + username,
+      url: 'http://localhost:8080/employee/getEmployeeByUserName?userName=' + username,
       withCredentials: false,
     }).then(function (response) {
-      setClientId(() => response.data.id)
+      setEmployeeId(() => response.data.id)
+      console.log(employeeId)
     }).catch(function (error) {
       if (error.response) {
         showMessage(error.response.data.message, "error");
@@ -120,9 +119,9 @@ export const UserPage: React.FC = () => {
 
   function takeClient(clientId: number) {
     if (clientId !== -1) {
-      getClientInfo(clientId, showMessage).then((value) => {
-        dispatch(takeClientInfo(value.data as IClient))
-        dispatch(takeClientGroups(value.data.groupTrainings as IGroup[]))
+      getEmployeeInfo(clientId, showMessage).then((value) => {
+        dispatch(takeEmployeeInfo(value.data as IEmployee))
+        //dispatch(takeClientGroups(value.data.groupTrainings as IGroup[]))
       })
     }
   };
@@ -188,22 +187,22 @@ export const UserPage: React.FC = () => {
          <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
            Schedule 
          </div>
-         <UserSchedule parentClientId={clientId} />
+         <UserSchedule parentClientId={employeeId} />
        </Col>
        <Col id='part-3' className={styles.coluserpage}>
          <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
            Groups
          </div>
-         <UserGroups parrentUserId={clientId} />
+         <UserGroups parrentUserId={employeeId} />
        </Col>
        <Col id='part-4' className={styles.coluserpage}>
          <div style={{ fontSize: 60, color: 'black', margin: '0px 0px 0px 0px' }}>
            Records
          </div>
-         <RecordClient />
+         {/* <RecordClient /> */}
        </Col>
        <Modal title="Edit info" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-         <UserInfo parrentUserId={clientId} updateClient={takeClient} updateImage={handleUpdateImage} />
+         <UserInfo parrentUserId={employeeId} updateClient={takeClient} updateImage={handleUpdateImage} />
        </Modal>
      </Row>
      

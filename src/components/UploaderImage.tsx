@@ -5,7 +5,7 @@ import {
 import Upload, { RcFile } from 'antd/es/upload';
 import axios from 'axios';
 import { useState } from 'react';
-import { ImageProps } from './UserInfo';
+import { ImageProps } from './Client/User/UserInfo';
 
 export const UploaderImage: React.FC<ImageProps> = ({ username, updateImage }: ImageProps) => {
 

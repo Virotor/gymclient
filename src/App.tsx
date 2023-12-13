@@ -12,6 +12,7 @@ import { RootState } from './store';
 import { useEffect } from 'react';
 import { getUser, isAuth } from './redux/utils/auth';
 import { auth } from './redux/reducers/UserSlice';
+import { UserPageEmployee } from './components/Employee/User/UserPage';
 
 enableMapSet();
 
@@ -41,9 +42,9 @@ function App() {
               ?
               <Route path="/account" element={<UserPage />} />
               :
-              user.user.role === 'role_employee'
+              user.user.role === 'role_trainer'
                 ?
-                <Route path="/account" element={<UserPage />} />
+                <Route path="/account" element={<UserPageEmployee />} />
                 :
                 <>
                 </>

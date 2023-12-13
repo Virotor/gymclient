@@ -4,22 +4,21 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { IClient } from '../../../redux/interfaces/Client';
 
 import styles from './user.module.scss'
-import { IEmployee } from '../../../redux/interfaces/Employee';
 
-interface EmployeeDiscriptionProps extends PropsWithChildren {
+interface ClientDiscriptionProps extends PropsWithChildren {
   client: IClient
   update: boolean
 }
 
 
 
-export const ClientDiscription: React.FC<EmployeeDiscriptionProps> = ({ client, update }: EmployeeDiscriptionProps) => {
+export const ClientDiscription: React.FC<ClientDiscriptionProps> = ({ client, update }: ClientDiscriptionProps) => {
 
   const [requestParam, setRequestParam] = useState('')
 
   useEffect(() => {
     if (client.id !== -1)
-      setRequestParam(() => "http://localhost:8080/image/get/client?id=" + client.id)
+      setRequestParam(() => "http://localhost:8080/image/get/employee?id=" + client.id)
   }, [client])
 
 

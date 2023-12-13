@@ -6,7 +6,7 @@ import userReducer from './redux/reducers/UserSlice'
 import clientReducer from './redux/reducers/ClientSlice';
 import scheduleReducer from './redux/reducers/ScheduleSlice'
 import employeeScheduleReducer from './redux/reducers/EmployeeSchedules';
-
+import employeeReducer from './redux/reducers/EmployeeSlice';
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +14,7 @@ export const store = configureStore({
         client: clientReducer,
         schedule: scheduleReducer,
         employeeSchedule: employeeScheduleReducer,
+        employee : employeeReducer,
     },
 })
 

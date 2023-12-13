@@ -15,9 +15,9 @@ import { PropsWithChildren, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { IGroup, getGroupType, groupSkillType } from '../../../redux/interfaces/Group';
 import { RootState } from '../../../store';
-import { AddNewGroup } from '../Group/AddNewGroup';
+
 import { clientAddNewGroup, clientDeleteGroup } from '../../../redux/reducers/ClientSlice';
-import { PopUp } from '../Record/PopUp';
+
 
 
 dayjs.extend(customParseFormat);
@@ -84,7 +84,7 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
       title: 'Action',
       render: (text, record, index) => (
         <Space size="middle">
-          <PopUp record={record} deleteRecord={deleteGroupClient} />
+          {/* <PopUp record={record} deleteRecord={deleteGroupClient} /> */}
         </Space>
 
       )
@@ -187,7 +187,7 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
         <Button type="primary" onClick={showModal} size='large'>
           <PlusSquareOutlined /> group
         </Button>
-        <AddNewGroup addNewGroup={addNewGroup} groups={filterGroup(groups)} isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} />
+        {/* <AddNewGroup addNewGroup={addNewGroup} groups={filterGroup(groups)} isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} /> */}
       </Space>
       {client.client.groups.filter((e) => e.groupType.toLowerCase() !== 'solo').length > 0
         ?
@@ -196,8 +196,6 @@ export const UserGroups: React.FunctionComponent<PropsWithChildren<GroupProps>> 
           columns={columns}
           dataSource={client.client.groups.filter((e) => e.groupType.toLowerCase() !== 'solo')}
         />
-        // <>
-        // </>
         :
         <Empty
           image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
